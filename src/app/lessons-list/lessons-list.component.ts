@@ -1,46 +1,42 @@
-import {Component} from '@angular/core';
-import {globalEventBus, Observer, LESSONS_LIST_AVAILABLE, ADD_NEW_LESSON} from "../event-bus-experiments/event-bus";
-import {Lesson} from "../shared/model/lesson";
+import {Component, OnInit} from '@angular/core';
+import {Lesson} from '../shared/model/lesson';
 import * as _ from 'lodash';
+import {Observer, store} from '../event-bus-experiments/app-data';
 
 @Component({
-    selector: 'lessons-list',
-    templateUrl: './lessons-list.component.html',
-    styleUrls: ['./lessons-list.component.css']
+  selector: 'lessons-list',
+  templateUrl: './lessons-list.component.html',
+  styleUrls: ['./lessons-list.component.css']
 })
-export class LessonsListComponent implements Observer {
+export class LessonsListComponent implements Observer, OnInit {
 
-    lessons: Lesson[] =[];
+  // to tutaj moze zostac bo to tylko bedzie nam wyglad template robilo
+  lessons: Lesson[] = [];
 
-    constructor() {
-        console.log('lesson list component is registered as observer ..');
-        globalEventBus.registerObserver(LESSONS_LIST_AVAILABLE, this);
+  ngOnInit() {
+    console.log('lesson list component is registered as observer ..');
+    // Observer jest wlasciwie komponentem
+    // tu zglaszamy observatora
+    // mozemy to dac do OnInit bo nie sa to dane synchroniczne
+    // jak w event loop
+    store.subscribe(this);
+  }
 
-        globalEventBus.registerObserver(ADD_NEW_LESSON, {
-            notify: lessonText => {
-                this.lessons.push({
-                    id: Math.random(),
-                    description: lessonText
-                })
-            }
-        } );
-    }
+  // tu przychodza dane  z app-data.ts
+  next(data: Lesson[]) {
+    console.log('Lessons list component received data ..');
+    // nie musimy tu roblic slice ani deep copy bo mamy to w sore
+    this.lessons = data;
+  }
 
-    notify(data: Lesson[]) {
-        console.log('Lessons list component received data ..');
-        this.lessons = data.slice(0);
-    }
+  toggleLessonViewed(lesson: Lesson) {
+    console.log('toggling lesson ...');
+    store.toggleLessonViewed(lesson);
+  }
 
-    toggleLessonViewed(lesson:Lesson) {
-        console.log('toggling lesson ...');
-        lesson.completed = !lesson.completed;
-    }
-
-    delete(deleted:Lesson) {
-        _.remove(this.lessons,
-            lesson => lesson.id === deleted.id )
-    }
-
+  delete(deleted: Lesson) {
+    store.deleteLesson(deleted);
+  }
 
 
 }
