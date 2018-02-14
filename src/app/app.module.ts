@@ -8,11 +8,11 @@ import { EventBusExperimentsComponent } from './event-bus-experiments/event-bus-
 import { LessonsListComponent } from './lessons-list/lessons-list.component';
 import { LessonsCounterComponent } from './lessons-counter/lessons-counter.component';
 import { HomeComponent } from './home/home.component';
-import {firebaseConfig} from "../environments/firebase.config";
+import {firebaseConfig} from '../environments/firebase.config';
 import {AngularFireModule} from 'angularfire2';
 import {AngularFireDatabaseModule} from 'angularfire2/database';
 import {RouterModule} from '@angular/router';
-import {routerConfig} from "./router.config";
+import {routerConfig} from './router.config';
 import { CourseDetailComponent } from './course-detail/course-detail.component';
 
 @NgModule({
