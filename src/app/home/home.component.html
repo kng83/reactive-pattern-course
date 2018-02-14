@@ -2,59 +2,13 @@
 <div class="screen-container">
 
     <h2>Stateless Observable Services</h2>
-    <!--aby tu wyswietlic observable to dajemy async
-    patrz jak ngFor robi sie async (*ngFor="let course of ( courses$ |async)")
-     po zmiane na async otrzymalismy
-    podwojne tablice ale nowa skladnia angulara 4 daje nam mozliwosc
-    assign as value i mozemy teraz wszedzie uzyc courses i mamy jeszcze
-    else ktory mozemy uzyc zeby zaladowac template
-    <div *ngIf="!courses">Loading ...</div> -->
-
-    <table
-      class="courses-list card card-strong"
-      *ngIf="courses$ |async as courses; else loadingCourses">
-        <tr class="course-summary" *ngFor="let course of courses ">
-            <td>
-                <img class="lesson-logo"
-                     src="https://material.angularjs.org/latest/img/icons/angular-logo.svg">
-            </td>
-            <td class="description">
-                {{course.description}}
-            </td>
-            <td>
-                <button class="button button-primary"
-                        [routerLink]="['/course',course.url]">
-                    View
-                </button>
-            </td>
-        </tr>
-    </table>
-  <ng-template #loadingCourses>
-    <!--JESLI NIE MAMY JESZCZE KURSOW TO WGRA SIE LOADING...-->
-    <!--i nie potrzebujemy ngIf bo template nam to pokaze
-    <div *ngIf="!courses">Loading ...</div>
-    -->
-    <div>Loading ...</div>
-  </ng-template>
+  <!--wciskamy do naszego komponenta na input observable-->
+    <courses-list [courses]="courses$ | async"></courses-list>
 
 
     <h2>Latest Lessons Published</h2>
 
-    <table class="table lessons-list card card-strong"
-           *ngIf="latestLessons$ | async as lessons; else loadingLessons">
-        <tbody>
-        <tr *ngFor="let lesson of lessons">
-            <td class="lesson-title"> {{lesson.description}}</td>
-            <td class="duration">
-                <i class="md-icon duration-icon">access_time</i>
-                <span>{{lesson.duration}}</span>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <ng-template #loadingLessons>
-
-    </ng-template>
-    <div>Loading ...</div>
+  <!--to rozsylamy do komponentu lesson-list przekazujemy Observable-->
+    <lessons-list [lessons] ="latestLessons$ | async"></lessons-list>
 
 </div>

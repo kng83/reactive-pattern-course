@@ -14,6 +14,10 @@ export class HomeComponent implements OnInit {
 
   // zeby bylo reactive style
   // to zmeniamy nasze courses zmieniamy je na observables
+  // rola teraz homeComponets jes rozdzielenie strumienia danych
+  // i prezentacja dwoch komponentow wenatrz
+  // to jest tak zwany SmartComponent
+
   courses$: Observable<Course[]>;
   latestLessons$: Observable<Lesson[]>;
 
@@ -21,28 +25,11 @@ export class HomeComponent implements OnInit {
 
   }
 
-  /*Wady tego rozwiazania to ze zawsze manualnie bierzemy
-  * dane z servera i trzymamy lokalne referencje do bazy
-  * danych
-  * Terazz zeby przypisac strumenie do observable przypisujemy je
-  * definiujemy strumien danych patrz komentarz na dole
-  * musimy tylko zmienic jeszcze nasze template*/
 
   ngOnInit() {
     this.courses$ = this.coursesService.findAllCourses();
-
     this.latestLessons$ = this.coursesService.findLatestLessons();
   }
 }
-// to usuwamy zeby zrobic reactive style
-// this.coursesService.findAllCourses()
-//   .subscribe(
-//     data => this.courses = data
-//   );
-//
-// this.coursesService.findLatestLessons()
-//   .subscribe(
-//     data => this.latestLessons = data
-//   );
-// }
+
 

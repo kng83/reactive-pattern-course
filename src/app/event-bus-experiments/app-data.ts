@@ -24,18 +24,14 @@ class DataStore {
   deleteLesson(deleted: Lesson) {
 
     const lessons = this.cloneLessons();
-
     _.remove(lessons, lesson => lesson.id === deleted.id);
-
     this.lessonsListSubject.next(lessons);
   }
 
   toggleLessonViewed(toggled: Lesson) {
 
     const lessons = this.cloneLessons();
-
     const lesson = _.find(lessons, lessonToggled => lessonToggled.id === toggled.id);
-
     lesson.completed = !lesson.completed;
     this.lessonsListSubject.next(lessons);
   }

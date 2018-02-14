@@ -17,12 +17,6 @@ export class CourseDetailComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private coursesService: CoursesService) {
-
-    /*Tu mamy problem bo mamy nested subskrypcje
-    * a bierzemy tylko parametry sciezki aby zindetyfikowac gdzie jestesmy
-    * ten kod gdy mamy subskrypcje wielopoziomowe jest trudny aby go uzyc jeszcze
-    * gdzies
-    * */
     route.params
       .subscribe(params => {
 
