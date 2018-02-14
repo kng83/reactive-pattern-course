@@ -1,87 +1,62 @@
-
 import * as _ from 'lodash';
-import {Lesson} from "../shared/model/lesson";
-
-
-
-export interface Observer {
-    next(data:any);
-}
-
-export interface Observable {
-    subscribe(obs:Observer);
-    unsubscribe(obs:Observer);
-}
-
-
-interface Subject extends Observer, Observable {
-
-}
-
-
-class SubjectImplementation implements Subject {
-
-    private observers: Observer[] = [];
-
-    next(data: any) {
-        this.observers.forEach(obs => obs.next(data));
-    }
-
-    subscribe(obs: Observer) {
-        this.observers.push(obs);
-    }
-
-    unsubscribe(obs: Observer) {
-        _.remove(this.observers, el => el === obs);
-    }
-
-}
-
+import {Lesson} from '../shared/model/lesson';
+import {Observable} from 'rxjs/Observable';
+import {Subject} from 'rxjs/Subject';
+import {Observer} from 'rxjs/Observer';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 class DataStore {
+  // Poniewaz beheviorSubject pamieta nasze wartosci nie potrzbujemy
+  // tablicy
+  // private lessons: Lesson[] = [];
 
-    private lessons : Lesson[]  = [];
+  // Subject ma te meto1dy subscribe i unsubscribe
+  // odpowiedz jest taka ze nasz Subject nie pamieta
+  // ostatniej wartosc (wtydy dawlismy next)
+  // musimy uzyc innego Subject => BehavioreSubject
+  // pamieta ostatnia wartosc
+  private lessonsListSubject = new BehaviorSubject<Lesson[]>([]);
 
-    private lessonsListSubject = new SubjectImplementation();
+  // Observable emituje lekcje wiec taki bedzie miala typ
+  // to byl nasz subsciber .lesson list bedzie emitowala nasz subject ale
+  // on jest trzymany prywatnie
+  public lessonsList$: Observable<Lesson[]> = this.lessonsListSubject.asObservable();
 
-    public lessonsList$: Observable = {
+  initializeLessonsList(newList: Lesson[]) {
+    this.lessonsListSubject.next(_.cloneDeep(newList));
+  }
 
-        subscribe: obs => {
-            this.lessonsListSubject.subscribe(obs);
-            obs.next(this.lessons);
-        },
+  addLesson(newLesson: Lesson) {
+    // bierzemy tu kopie , wpychamy nowy element i wywloujemy u obserwatorow next
+    const lessons = this.cloneLessons();
+    lessons.push(_.cloneDeep(newLesson));
+    // i tu robimy broadcast do wszystkich obserwatorow
+    this.lessonsListSubject.next(lessons);
+  }
 
-        unsubscribe: obs => this.lessonsListSubject.unsubscribe(obs)
-    };
+  deleteLesson(deleted: Lesson) {
+    const lessons = this.cloneLessons();
+    _.remove(lessons, lesson => lesson.id === deleted.id);
+    this.lessonsListSubject.next(lessons);
+  }
 
-    initializeLessonsList(newList: Lesson[]) {
-        this.lessons = _.cloneDeep(newList);
-        this.broadcast();
-    }
+  toggleLessonViewed(toggled: Lesson) {
+    const lessons = this.cloneLessons();
+    const lesson = _.find(lessons, lessonToggle => lessonToggle.id === toggled.id);
+    lesson.completed = !lesson.completed;
+    this.lessonsListSubject.next(lessons);
 
-    addLesson(newLesson: Lesson) {
-        this.lessons.push(_.cloneDeep(newLesson));
-        this.broadcast();
-    }
+  }
 
-    deleteLesson(deleted:Lesson) {
-        _.remove(this.lessons,
-            lesson => lesson.id === deleted.id );
-        this.broadcast();
-    }
+  // poniewaz lessonsListSubject trzyma nasza wartosc mozemy z niego
+  // zrbic kopie lekcji
+  private cloneLessons() {
+    return _.cloneDeep(this.lessonsListSubject.getValue());
+  }
 
-    toggleLessonViewed(toggled:Lesson) {
-        const lesson = _.find(this.lessons, lesson => lesson.id === toggled.id);
-
-        lesson.completed = ! lesson.completed;
-        this.broadcast();
-
-
-    }
-
-    broadcast() {
-        this.lessonsListSubject.next(_.cloneDeep(this.lessons));
-    }
+  // broadcast() {
+  //   this.lessonsListSubject.next(_.cloneDeep(this.lessons));
+  // }
 }
 
 export const store = new DataStore();
