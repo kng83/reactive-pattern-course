@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {AngularFireDatabase} from 'angularfire2/database';
 import {Course} from '../shared/model/course';
 import {Lesson} from '../shared/model/lesson';
+import {CoursesService} from '../services/courses.service';
+import {Observable} from 'rxjs/Observable';
 
 
 @Component({
@@ -11,41 +12,37 @@ import {Lesson} from '../shared/model/lesson';
 })
 export class HomeComponent implements OnInit {
 
-  courses: Course[];
-  latestLessons: Lesson[];
+  // zeby bylo reactive style
+  // to zmeniamy nasze courses zmieniamy je na observables
+  courses$: Observable<Course[]>;
+  latestLessons$: Observable<Lesson[]>;
 
-  constructor(private db: AngularFireDatabase) {
+  constructor(private coursesService: CoursesService) {
 
   }
+
   /*Wady tego rozwiazania to ze zawsze manualnie bierzemy
   * dane z servera i trzymamy lokalne referencje do bazy
   * danych
-  * */
+  * Terazz zeby przypisac strumenie do observable przypisujemy je
+  * definiujemy strumien danych patrz komentarz na dole
+  * musimy tylko zmienic jeszcze nasze template*/
 
   ngOnInit() {
-    // pobieranie list jest przez operator list z firebase
-    // w firebase jest galaz(obiekt) courese
-    // operato posredni do (pozwala nam wykonca jakas referencje
-    // do funckji i przekazuje do niej dane
+    this.courses$ = this.coursesService.findAllCourses();
 
-    this.db.list('courses')
-      .do(console.log)
-      .subscribe(
-        data => this.courses = data
-      );
-    // odwolanie do sciezki (do obiektu lesson w firebase)
-    // orderByKey ze porzadkuje wedlug klucza firebase
-    // limit okresla ze bierzemy ostatnie kursy
-    this.db.list('lessons', {
-      query: {
-        orderByKey: true,
-        limitToLast: 10
-      }
-    })
-      .do(console.log)
-      .subscribe(
-        data => this.latestLessons = data
-      );
+    this.latestLessons$ = this.coursesService.findLatestLessons();
   }
-
 }
+// to usuwamy zeby zrobic reactive style
+// this.coursesService.findAllCourses()
+//   .subscribe(
+//     data => this.courses = data
+//   );
+//
+// this.coursesService.findLatestLessons()
+//   .subscribe(
+//     data => this.latestLessons = data
+//   );
+// }
+

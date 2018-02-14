@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import {AngularFireDatabase} from 'angularfire2/database';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Course} from '../shared/model/course';
 import {Lesson} from '../shared/model/lesson';
-import * as _ from 'lodash';
+import {CoursesService} from '../services/courses.service';
 
 
 @Component({
@@ -13,45 +12,37 @@ import * as _ from 'lodash';
 })
 export class CourseDetailComponent implements OnInit {
 
-  course: Course;
+   course: Course;
   lessons: Lesson[];
 
-  constructor(private route: ActivatedRoute, private db: AngularFireDatabase) {
+  constructor(private route: ActivatedRoute,
+              private coursesService: CoursesService) {
 
     /*Tu mamy problem bo mamy nested subskrypcje
     * a bierzemy tylko parametry sciezki aby zindetyfikowac gdzie jestesmy
     * ten kod gdy mamy subskrypcje wielopoziomowe jest trudny aby go uzyc jeszcze
     * gdzies
     * */
-      route.params
-          .subscribe( params => {
+    route.params
+      .subscribe(params => {
 
-              const courseUrl = params['id'];
+        const courseUrl = params['id'];
+        console.log(courseUrl);
+        this.coursesService.findCourseByUrl(courseUrl)
+          .subscribe((data) => {
+            console.log(data, 'sub');
+            this.course = data;
 
-              // gdy wezmiemy parametr sciezki to tutaj
-            // wyszukujem dany kurs po sciezce
-              this.db.list('courses', {
-                  query: {
-                      orderByChild: 'url',
-                      equalTo: courseUrl
-                  }
-              })
-              .map( data => data[0]) // tutaj mamy juz nasz kurs i pobieramy dane
-              .subscribe(data => {
-                // i tutaj trzymamy referencje do course
-                  this.course = data;
-
-                  this.db.list('lessons', {
-                          query: {
-                              orderByChild: 'courseId',
-                              equalTo: data.$key
-                          }
-                      })
-                      .subscribe(lessons => this.lessons = lessons);
+            this.coursesService.findLessonsForCourse(this.course.id)
+              .subscribe(lessons => {
+                console.log(lessons, 'here');
+                this.lessons = lessons;
               });
-
           });
 
+
+
+      });
   }
 
   ngOnInit() {
