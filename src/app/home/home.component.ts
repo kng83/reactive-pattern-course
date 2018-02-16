@@ -1,32 +1,31 @@
 import {Component, OnInit} from '@angular/core';
-import {Course} from "../shared/model/course";
-import {Lesson} from "../shared/model/lesson";
-import {CoursesService} from "../services/courses.service";
-import {Observable} from 'rxjs';
+import {Course} from '../shared/model/course';
+import {Lesson} from '../shared/model/lesson';
+import {CoursesService} from '../services/courses.service';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
-    selector: 'home',
-    templateUrl: './home.component.html',
-    styleUrls: ['./home.component.css']
+  selector: 'home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
 
-    courses$: Observable<Course[]>;
-    latestLessons$: Observable<Lesson[]>;
+  courses$: Observable<Course[]>;
+  latestLessons$: Observable<Lesson[]>;
 
-    constructor(private coursesService: CoursesService) {
+  constructor(private coursesService: CoursesService) {
 
-    }
+  }
 
-    ngOnInit() {
+  ngOnInit() {
 
-        this.courses$ =  this.coursesService.findAllCourses();
+    this.courses$ = this.coursesService.findAllCourses();
 
-        this.latestLessons$ = this.coursesService.findLatestLessons();
+    this.latestLessons$ = this.coursesService.findLatestLessons();
 
 
-
-    }
+  }
 
 }
 
