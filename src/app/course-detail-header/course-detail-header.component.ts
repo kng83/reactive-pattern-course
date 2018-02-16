@@ -7,7 +7,7 @@ import {Lesson} from '../shared/model/lesson';
   templateUrl: './course-detail-header.component.html',
   styleUrls: ['./course-detail-header.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
-
+  // changeDetection: ChangeDetectionStrategy.OnPush => wtedy wykrywa zmiane komponetu i go laduje
 })
 export class CourseDetailHeaderComponent {
 
@@ -16,15 +16,5 @@ export class CourseDetailHeaderComponent {
 
   @Input()
   lessons: Lesson[];
-
-  @Input()
-  firstName: string;
-
-  @Output()
-  subscribe = new EventEmitter();
-
-  onSubscribe(email: string) {
-    this.subscribe.emit(email);
-  }
 
 }

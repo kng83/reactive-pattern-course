@@ -1,21 +1,43 @@
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
+import {Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy} from '@angular/core';
+import {NewsletterService} from '../services/newsletter.service';
+import {UserService} from '../services/user.service';
+import {Observable} from 'rxjs/Observable';
 
+// zmieniamy tu strategie na onPush. Iak bedzie zmiana na inputach to bedzie
+// on wyrenderowany
 @Component({
   selector: 'newsletter',
   templateUrl: './newsletter.component.html',
-  styleUrls: ['./newsletter.component.css']
+  styleUrls: ['./newsletter.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NewsletterComponent {
+export class NewsletterComponent implements OnInit {
 
-  @Input()
-  firstName: string;
+  // jak damy normalen firstName to po zmianach nie bedzie zmiany
+  // musimy dac observable
 
-  @Output()
-  subscribe = new EventEmitter();
+  firstName$: Observable<string>;
+
+  constructor(private newsletterService: NewsletterService,
+              private userService: UserService) {
+
+  }
+
+  ngOnInit() {
+    // tutaj przepisujem firstNama do observable firstName$
+    this.firstName$ = this.userService.user$
+      .map(user => user.firstName)
+  }
 
   subscribeToNewsletter(emailField) {
-    this.subscribe.emit(emailField.value);
-    emailField.value = '';
+    this.newsletterService.subscribeToNewsletter(emailField.value)
+      .subscribe(
+        () => {
+          emailField.value = ''; // aby wyczyscic pole
+          alert('Subscription successful ...');
+        },
+        console.error // mozemy tak dac bo to referencja do erroru
+      );
   }
 
 

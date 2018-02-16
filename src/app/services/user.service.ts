@@ -29,7 +29,7 @@ export class UserService {
   // jak observable aby ja rozglosic
   user$: Observable<User> = this.subject.asObservable();
 
-  // damy tutaj inny servis
+  // damy tutaj inny servise
   constructor(private http: Http) {
   }
 
