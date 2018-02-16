@@ -3,6 +3,7 @@
 
     <h2>{{ (course$ | async)?.description }}</h2>
 
+  <!--Pagination-->
     <div class="lessons-nav">
         <button (click)="previousLessonsPage()">Previous</button>
         <button (click)="nextLessonsPage()">Next</button>
