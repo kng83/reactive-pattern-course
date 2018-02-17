@@ -1,6 +1,7 @@
 <table class="table lessons-list card card-strong"
        *ngIf="lessons; else  loadingLessons;">
     <tbody>
+    <!--Naciskamy na lekcje to wywolywamy funkcje-->
     <tr *ngFor="let lesson of lessons" (click)="select(lesson)">
         <td class="lesson-title"> {{lesson.description}}</td>
         <td class="duration">

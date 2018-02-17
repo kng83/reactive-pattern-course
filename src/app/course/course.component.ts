@@ -23,6 +23,9 @@ export class CourseComponent implements OnInit, OnDestroy {
   // chcemy ze nasz servis byl statefull
   lessons$: Observable<Lesson[]>;
 
+  // implementujemy cechy lekcji
+  detail$: Observable<Lesson>;
+
   constructor(private coursesService: CoursesHttpService,
               private lessonsPager: LessonsPagerService) {
 
@@ -48,9 +51,23 @@ export class CourseComponent implements OnInit, OnDestroy {
 
   }
 
+  // pobieramy url lekcji
+  selectDetail(lesson: Lesson) {
+    this.detail$ = this.coursesService.findLessonDetailById(lesson.url);
+  }
+
+
+  // jesli damy ta observable na undefined to schowa sie na ekran z filmem
+  // dzieki temu tez dane nie beda przeladowane
+  backToMaster() {
+    this.detail$ = undefined;
+  }
+
   ngOnDestroy() {
     console.log('destroying CourseComponent ...');
   }
+
+
 
 }
 

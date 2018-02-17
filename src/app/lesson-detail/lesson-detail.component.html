@@ -3,6 +3,7 @@
 <h3>{{ lesson?.description }}</h3>
 <h5>Duration: {{ lesson?.duration  }}</h5>
 
+<!--tutaj jest puszczane video z youtuba-->
 <iframe *ngIf="lesson?.videoUrl"
         width="260" height="150" frameborder="0" allowfullscreen
         [src]="lesson?.videoUrl | safeUrl">
