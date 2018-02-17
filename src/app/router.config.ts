@@ -4,6 +4,7 @@ import {CourseDetailComponent} from "./course-detail/course-detail.component";
 import {LoginComponent} from "./login/login.component";
 import {AllLessonsComponent} from "./all-lessons/all-lessons.component";
 import {CreateLessonComponent} from "./create-lesson/create-lesson.component";
+import {CourseDetailResolver} from './course-detail/course-detail.resolver';
 
 export const routerConfig: Routes = [
     {
@@ -19,8 +20,15 @@ export const routerConfig: Routes = [
         component: AllLessonsComponent
     },
     {
+      // tutaj musimy dac nasz resolver i podczepic go
+      // jakie dane musza zostac rozwiazane aby przejsc do
+      // danego komponentu
         path: 'course/:id',
-        component: CourseDetailComponent
+        component: CourseDetailComponent,
+        resolve: {
+          detail: CourseDetailResolver
+
+      }
     },
     {
         path: 'lesson/new',
