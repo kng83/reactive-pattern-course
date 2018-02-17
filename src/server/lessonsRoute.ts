@@ -7,6 +7,7 @@ export function lessonsRoute(req, res) {
 
     console.log(req.query);
 
+    // losowe wysylanie bledu do servera
     const random = Math.ceil(Math.random() * 10);
 
     if (random % 2 == 1) {

@@ -29,6 +29,8 @@ import {SafeUrlPipe} from "./shared/pipes/safe-url.pipe";
 import {LessonsPagerService} from "./services/lessons-pager.service";
 import {AngularFireAuthModule} from "angularfire2/auth";
 import {AngularFireDatabaseModule} from "angularfire2/database";
+import { MessagesComponent } from './messages/messages.component';
+import {MessagesService} from './services/messages.service';
 
 
 @NgModule({
@@ -48,7 +50,8 @@ import {AngularFireDatabaseModule} from "angularfire2/database";
         AllLessonsComponent,
         CourseComponent,
         LessonDetailComponent,
-        SafeUrlPipe
+        SafeUrlPipe,
+        MessagesComponent
     ],
     imports: [
         BrowserModule,
@@ -63,7 +66,8 @@ import {AngularFireDatabaseModule} from "angularfire2/database";
         CoursesService,
         NewsletterService,
         UserService,
-        CoursesHttpService
+        CoursesHttpService,
+        MessagesService
     ],
     bootstrap: [AppComponent]
 })
